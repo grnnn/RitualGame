@@ -10,6 +10,10 @@ class StateMachine
 
   set currentState( currentState /*: State*/)
   {
+    if (this._currentState !== undefined)
+    {
+      this._currentState = this._currentState.reset();
+    }
     this._currentState = currentState;
   }
 
