@@ -1,0 +1,72 @@
+<html>
+  <head>
+    <title>State Machine Test</title>
+    <h2 id="test1">State Machine test... </h2>
+
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+  </head>
+  <body>
+
+    <script src="../src/StateMachine/State.js"></script>
+    <script src="../src/StateMachine/StateMachine.js"></script>
+
+    <script>
+      function test1()
+      {
+        var timerState = new State();
+        timerState.setData({timer: 60});
+        timerState.setUpdate(function(state){
+          state.data.timer--;
+        });
+
+        var stateTwo = new State();
+
+        timerState.setTransition(stateTwo, function(state){
+          return state.data.timer === 0;
+        });
+
+        var myStateMachine = new StateMachine(timerState);
+
+        var success = myStateMachine._currentState === timerState;
+        var frameCount = 1;
+
+        function loop()
+        {
+          var exit = false;
+
+          if(frameCount < 60)
+          {
+            success = success && myStateMachine._currentState === timerState;
+          }
+          else
+          {
+            success = success && myStateMachine._currentState === stateTwo;
+            exit = true;
+          }
+
+          frameCount++;
+          myStateMachine.update();
+
+          if (!exit)
+          {
+              window.setTimeout(loop, 16);
+          }
+        }
+
+        loop();
+        if(success)
+        {
+          $("#test1").text("State Machine test... success");
+        }
+        else
+        {
+          $("#test1").text("State Machine test... failed");
+        }
+      }
+
+      test1();
+
+    </script>
+  </body>
+
+</html>
